@@ -33,7 +33,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.HelloOtus</mainClass>
+                            <mainClass>ru.otus.checker.ArrayListValidator</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
