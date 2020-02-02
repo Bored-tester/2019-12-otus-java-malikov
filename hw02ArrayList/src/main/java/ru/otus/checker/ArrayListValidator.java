@@ -1,8 +1,9 @@
 package ru.otus.checker;
 
-import ru.otus.task.DIYArrayList;
 import ru.otus.checker.testClasses.TestFather;
+import ru.otus.checker.testClasses.TestRoyalty;
 import ru.otus.checker.testClasses.TestSon;
+import ru.otus.task.DIYArrayList;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +15,7 @@ public class ArrayListValidator {
         testRoyalty();
     }
 
-    private static void testIntegerDIYArrayList(){
+    private static void testIntegerDIYArrayList() {
 
         DIYArrayList diyIntList1 = new <Integer>DIYArrayList();
         diyIntList1.add(3);
@@ -42,7 +43,7 @@ public class ArrayListValidator {
         System.out.println(diyIntList1);
     }
 
-    private static void testRoyalty(){
+    private static void testRoyalty() {
         //check sort and basic flow
         TestFather kingLudwig = new TestFather("Pier", "Ludwig");
         kingLudwig.acknowledgeSon(new TestSon("Ivan", kingLudwig, 2));
@@ -68,9 +69,9 @@ public class ArrayListValidator {
         System.out.println(kingDaniels);
 
         // check String sort
-        DIYArrayList<TestFather> kings = new DIYArrayList<>();
-        Collections.addAll(kings, kingDaniels, kingShiva, kingLudwig);
-        Collections.sort(kings, Comparator.comparing(TestFather::getName));
+        DIYArrayList<TestRoyalty> kings = new DIYArrayList<>();
+        Collections.addAll(kings, kingDaniels, kingShiva, kingLudwig, new TestSon("Sneaky Pit", kingLudwig, 666));
+        Collections.sort(kings, Comparator.comparing(TestRoyalty::getName));
         System.out.println(kings);
 
     }

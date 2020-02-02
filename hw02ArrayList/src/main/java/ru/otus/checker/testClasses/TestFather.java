@@ -2,10 +2,11 @@ package ru.otus.checker.testClasses;
 
 import ru.otus.task.DIYArrayList;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class TestFather extends TestRoyalty{
-    private DIYArrayList <TestSon> sons;
+public class TestFather extends TestRoyalty {
+    private DIYArrayList<TestSon> sons;
 
     public TestFather(String name, String surname) {
         super(Titles.KING, name, surname);
@@ -36,7 +37,7 @@ public class TestFather extends TestRoyalty{
         Collections.sort(this.sons, Comparator.comparingInt(TestSon::getAge));
     }
 
-    public String toString(){
+    public String toString() {
         return String.format("\nHis Eminence %s %s %s\n and his sons: %s", getTitle(), getName(), getSurname(), sons);
     }
 }

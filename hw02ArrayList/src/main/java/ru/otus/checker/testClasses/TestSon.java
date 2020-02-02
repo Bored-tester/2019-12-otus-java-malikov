@@ -1,6 +1,6 @@
 package ru.otus.checker.testClasses;
 
-public class TestSon extends TestRoyalty{
+public class TestSon extends TestRoyalty {
 
     private Integer age;
     private TestFather father;
@@ -16,7 +16,7 @@ public class TestSon extends TestRoyalty{
         return age;
     }
 
-    public String toString(){
+    public String toString() {
         return String.format("\nHis Highness %s %s %s %d years old", getTitle(), getName(), getSurname(), age);
     }
 

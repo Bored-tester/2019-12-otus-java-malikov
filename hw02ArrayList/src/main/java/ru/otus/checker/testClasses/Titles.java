@@ -1,6 +1,6 @@
 package ru.otus.checker.testClasses;
 
-class Titles{
+class Titles {
 
     static final String PRINCE = "Prince";
     static final String KING = "King";

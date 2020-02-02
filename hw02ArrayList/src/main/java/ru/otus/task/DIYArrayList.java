@@ -41,7 +41,7 @@ public class DIYArrayList<T> implements List<T> {
         return new DIYIterator();
     }
 
-    private class DIYIterator implements Iterator<T>{
+    private class DIYIterator implements Iterator<T> {
         Integer lastVisitedIndex;
         int cursor;
 
@@ -49,7 +49,7 @@ public class DIYArrayList<T> implements List<T> {
             cursor = 0;
         }
 
-        public boolean hasNext(){
+        public boolean hasNext() {
             return cursor < actualSize;
         }
 
@@ -65,20 +65,21 @@ public class DIYArrayList<T> implements List<T> {
         return new DIYArrayListIterator();
     }
 
-    private class DIYArrayListIterator extends DIYIterator implements ListIterator<T>{
+    private class DIYArrayListIterator extends DIYIterator implements ListIterator<T> {
 
-        DIYArrayListIterator(){
+        DIYArrayListIterator() {
         }
 
-        DIYArrayListIterator(int index){
+        DIYArrayListIterator(int index) {
             checkBounds(index, "get list iterator");
             cursor = index;
         }
-        public void remove(){
+
+        public void remove() {
             throw new UnsupportedOperationException("remove");
         }
 
-        public boolean hasPrevious(){
+        public boolean hasPrevious() {
             return (cursor < actualSize) && (cursor > 0);
         }
 
@@ -88,11 +89,17 @@ public class DIYArrayList<T> implements List<T> {
             return (T) elements[lastVisitedIndex];
         }
 
-        public int nextIndex(){ return cursor;}
-        public int previousIndex(){ return (cursor - 1);}
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return (cursor - 1);
+        }
 
         public void set(T value) {
-            if (lastVisitedIndex == null) throw new IllegalStateException("Can't execute set as no next() or previous() were called since iterator initialization, add() or remove() call");
+            if (lastVisitedIndex == null)
+                throw new IllegalStateException("Can't execute set as no next() or previous() were called since iterator initialization, add() or remove() call");
             elements[lastVisitedIndex] = value;
         }
 
@@ -176,7 +183,7 @@ public class DIYArrayList<T> implements List<T> {
     @Override
     public T set(int index, T value) {
         checkBounds(index, "set element");
-        T previousValue = (T)elements[index];
+        T previousValue = (T) elements[index];
         elements[index] = value;
         return previousValue;
     }
@@ -200,7 +207,7 @@ public class DIYArrayList<T> implements List<T> {
         return String.format("DIYArrayList:\n%s\n", Arrays.toString(Arrays.copyOfRange(elements, 0, actualSize)));
     }
 
-    private void checkBounds(int index, String operation){
+    private void checkBounds(int index, String operation) {
         if ((index < 0) || (index >= actualSize))
             throw new ArrayIndexOutOfBoundsException(String.format("Trying to %s at index %d from DIYArrayList of size %d", operation, index, actualSize));
     }
