@@ -3,7 +3,8 @@ package ru.otus.task;
 import java.util.*;
 
 public class DIYArrayList<T> implements List<T> {
-    private final int SIZE_GROWTH = 10;
+    private final static int SIZE_GROWTH = 10;
+    public final static int DEFAULT_SIZE = 10;
     private int actualSize = 0;
     private Object[] elements;
 
@@ -11,9 +12,9 @@ public class DIYArrayList<T> implements List<T> {
         elements = new Object[SIZE_GROWTH];
     }
 
-    public DIYArrayList(int maxSize) {
-        elements = new Object[maxSize];
-        actualSize = maxSize;
+    public DIYArrayList(int size) {
+        elements = new Object[size];
+        actualSize = size;
     }
 
     @Override

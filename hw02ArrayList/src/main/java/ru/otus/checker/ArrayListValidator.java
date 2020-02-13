@@ -21,26 +21,31 @@ public class ArrayListValidator {
         diyIntList1.add(3);
         diyIntList1.add(2);
         diyIntList1.add(1);
-        System.out.println(diyIntList1);
+        System.out.println("initial array1: " + diyIntList1);
         Collections.sort(diyIntList1);
-        System.out.println(diyIntList1);
+        System.out.println("sorted array1: " + diyIntList1);
+
+        Collections.addAll(diyIntList1, 546, 5, 555);
+        System.out.println("add all to array1: " + diyIntList1);
+
+        for (int i = 0; i < (DIYArrayList.DEFAULT_SIZE * 3); i++)
+            diyIntList1.add(i);
+        System.out.println("add many elements to array1 one by one: " + diyIntList1);
+
+        Collections.addAll(diyIntList1, diyIntList1.toArray());
+        System.out.println("add a lot of elements in a batch via addAll to array1: " + diyIntList1);
 
         DIYArrayList diyIntList2 = new <Integer>DIYArrayList();
         diyIntList2.add(3);
         diyIntList2.add(3);
         diyIntList2.add(89);
-        System.out.println(diyIntList2);
-
-
-        Collections.addAll(diyIntList1, 546, 5, 555);
-        System.out.println(diyIntList1);
+        System.out.println("initial array2: " + diyIntList2);
 
         Collections.copy(diyIntList1, diyIntList2);
-        System.out.println(diyIntList1);
-        System.out.println(diyIntList2);
+        System.out.println("copied array2 into array1: " + diyIntList1);
 
         Collections.sort(diyIntList1, Integer::compare);
-        System.out.println(diyIntList1);
+        System.out.println("sorted array1: " + diyIntList1);
     }
 
     private static void testRoyalty() {
