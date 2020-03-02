@@ -1,16 +1,11 @@
 package ru.otus.atm.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import ru.otus.atm.enums.CcyCode;
 
-@Getter
-@AllArgsConstructor
-public class Banknote {
-    private final CcyCode ccyCode;
-    private final Integer nominal;
+public interface Banknote {
+    CcyCode getCcyCode();
 
-    public Double getAmount() {
-        return Double.valueOf(nominal);
-    }
+    Integer getNominal();
+
+    Double getAmount();
 }

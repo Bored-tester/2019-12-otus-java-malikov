@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import ru.otus.atm.enums.AtmErrorType;
 import ru.otus.atm.enums.CcyCode;
 import ru.otus.atm.utils.AtmResponse;
-import ru.otus.atm.utils.Banknote;
+import ru.otus.atm.utils.BanknoteImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AtmTest {
-    private static Atm atm = new Atm();
+    private static Atm atm = new AtmImpl();
     private static final String BATMAN_LOGIN = "Bruce";
     private static final String VASYA_LOGIN = "Vasya";
 
@@ -45,7 +45,7 @@ class AtmTest {
     }
 
     @Test
-    void CheckBalance() {
+    void checkBalance() {
 //      Batman has 1000000000.0 RUB
         String richUserToken = atm.authenticate(BATMAN_LOGIN).get();
         AtmResponse response = atm.getTotal(CcyCode.RUB, richUserToken);
@@ -58,7 +58,7 @@ class AtmTest {
     }
 
     @Test
-    void CheckBalanceOnUnsupportedCcy() {
+    void checkBalanceOnUnsupportedCcy() {
         String richUserToken = atm.authenticate(BATMAN_LOGIN).get();
         AtmResponse response = atm.getTotal(CcyCode.JPY, richUserToken);
         assertThat(response.getErrorType())
@@ -70,7 +70,7 @@ class AtmTest {
     void insertNote() {
         String poorUserToken = atm.authenticate(VASYA_LOGIN).get();
         Double balance = (Double) atm.getTotal(CcyCode.RUB, poorUserToken).getValue();
-        AtmResponse response = atm.insert(new Banknote(CcyCode.RUB, 5000), poorUserToken);
+        AtmResponse response = atm.insert(new BanknoteImpl(CcyCode.RUB, 5000), poorUserToken);
         assertThat(response.getErrorType())
                 .as("User should be able to successfully insert money")
                 .isEqualTo(AtmErrorType.OK);
@@ -83,7 +83,7 @@ class AtmTest {
     void insertIncorrectCcy() {
         String poorUserToken = atm.authenticate(VASYA_LOGIN).get();
 
-        AtmResponse response = atm.insert(new Banknote(CcyCode.USD, 100), poorUserToken);
+        AtmResponse response = atm.insert(new BanknoteImpl(CcyCode.USD, 100), poorUserToken);
         assertThat(response.getErrorType())
                 .as("User Vasya shouldn't be able to insert 100 Usd as he has no USD account.")
                 .isEqualTo(AtmErrorType.ACCOUNT_PROBLEM);
@@ -93,7 +93,7 @@ class AtmTest {
     void insertInvalidNominal() {
         String poorUserToken = atm.authenticate(VASYA_LOGIN).get();
 
-        AtmResponse response = atm.insert(new Banknote(CcyCode.RUB, 101), poorUserToken);
+        AtmResponse response = atm.insert(new BanknoteImpl(CcyCode.RUB, 101), poorUserToken);
         assertThat(response.getErrorType())
                 .as("User Vasya shouldn't be able to insert 101 Rub as it has invalid nominal.")
                 .isEqualTo(AtmErrorType.INCORRECT_INPUT);
@@ -105,7 +105,7 @@ class AtmTest {
         atm.printOutAtmState();
 
         Double balance = (Double) atm.getTotal(CcyCode.RUB, poorUserToken).getValue();
-        atm.insert(new Banknote(CcyCode.RUB, 1000), poorUserToken);
+        atm.insert(new BanknoteImpl(CcyCode.RUB, 1000), poorUserToken);
 //      there was a preinstalled empty ATM tray for 1000Rub which should now appear in ATM state print out
         atm.printOutAtmState();
         assertThat((Double) atm.getTotal(CcyCode.RUB, poorUserToken).getValue())
@@ -119,9 +119,9 @@ class AtmTest {
 
 //      there should be one empty tray for 2000RUB tray of max size of 50 notes. Let's overload it.
         for (int i = 0; i < 50; i++) {
-            atm.insert(new Banknote(CcyCode.RUB, 2000), poorUserToken);
+            atm.insert(new BanknoteImpl(CcyCode.RUB, 2000), poorUserToken);
         }
-        AtmResponse response = atm.insert(new Banknote(CcyCode.RUB, 2000), poorUserToken);
+        AtmResponse response = atm.insert(new BanknoteImpl(CcyCode.RUB, 2000), poorUserToken);
         assertThat(response.getErrorType())
                 .as("User Vasya shouldn't be able to insert 2000 Rub as there is no available 2000Rub tray.")
                 .isEqualTo(AtmErrorType.INSUFFICIENT_STORAGE);
