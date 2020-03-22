@@ -1,6 +1,8 @@
 package ru.otus.atmDepartment;
 
 import ru.otus.atm.Atm;
+import ru.otus.atm.AtmImpl;
+import ru.otus.atm.AtmListener;
 import ru.otus.atm.enums.CcyCode;
 import ru.otus.atm.utils.BanknoteImpl;
 
@@ -9,37 +11,42 @@ public class AtmDepartmentTest {
 
     public static void main(String... args) {
         AtmDepartment atmDepartment = new AtmDepartmentImpl();
-        int firstAtmId = atmDepartment.addAtm();
-        System.out.println(String.format("New atm balance: %s", atmDepartment.getAtmTotalBalance(firstAtmId)));
+        Atm firstAtm = new AtmImpl();
+        AtmListener firstAtmListener = firstAtm.getListener();
+        atmDepartment.addAtmListener(firstAtmListener);
+        System.out.println(String.format("New atm balance: %s", firstAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("Total atm balance: %s", atmDepartment.getAtmsTotalBalance()));
 
-        int secondAtmId = atmDepartment.addAtm();
+        Atm secondAtm = new AtmImpl();
+        AtmListener secondAtmListener = secondAtm.getListener();
+        atmDepartment.addAtmListener(secondAtmListener);
         System.out.println(String.format("Total atm balance after second atm was added: %s", atmDepartment.getAtmsTotalBalance()));
 
-        Atm firstAtm = atmDepartment.getAtm(firstAtmId);
-        Atm secondAtm = atmDepartment.getAtm(secondAtmId);
         initFirstAtm(firstAtm);
         firstAtm.backup();
 
         initSecondAtm(secondAtm);
 
-        System.out.println(String.format("1st atm balance: %s", atmDepartment.getAtmTotalBalance(firstAtmId)));
-        System.out.println(String.format("2nd atm balance: %s", atmDepartment.getAtmTotalBalance(secondAtmId)));
+        System.out.println(String.format("1st atm balance: %s", firstAtmListener.getAtmTotal().getValue()));
+        System.out.println(String.format("2nd atm balance: %s", secondAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("\nTotal atm balance: %s\n\n", atmDepartment.getAtmsTotalBalance()));
 
         atmDepartment.restoreAtmsToBackups();
-        System.out.println(String.format("1st atm balance after restore: %s", atmDepartment.getAtmTotalBalance(firstAtmId)));
-        System.out.println(String.format("2nd atm balance after restore: %s", atmDepartment.getAtmTotalBalance(secondAtmId)));
+        System.out.println(String.format("1st atm balance after restore: %s", firstAtmListener.getAtmTotal().getValue()));
+        System.out.println(String.format("2nd atm balance after restore: %s", secondAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("\nTotal atm balance after restore: %s\n\n", atmDepartment.getAtmsTotalBalance()));
 
         useAtm(firstAtm);
-        System.out.println(String.format("1st atm balance after 10$ withdrawal and 100$ deposit: %s", atmDepartment.getAtmTotalBalance(firstAtmId)));
+        System.out.println(String.format("1st atm balance after 10$ withdrawal and 100$ deposit: %s", firstAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("\nTotal atm balance after 10$ withdrawal and 100$ deposit: %s\n\n", atmDepartment.getAtmsTotalBalance()));
 
         atmDepartment.restoreAtmsToBackups();
-        System.out.println(String.format("1st atm balance after restore: %s", atmDepartment.getAtmTotalBalance(firstAtmId)));
-        System.out.println(String.format("2nd atm balance after restore: %s", atmDepartment.getAtmTotalBalance(secondAtmId)));
+        System.out.println(String.format("1st atm balance after restore: %s", firstAtmListener.getAtmTotal().getValue()));
+        System.out.println(String.format("2nd atm balance after restore: %s", secondAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("\nTotal atm balance after restore: %s\n\n", atmDepartment.getAtmsTotalBalance()));
+
+        atmDepartment.removeAtmListener(firstAtmListener);
+        System.out.println(String.format("\nTotal atm balance after first Atm was removed from the department: %s\n\n", atmDepartment.getAtmsTotalBalance()));
     }
 
     static void initFirstAtm(Atm atm) {

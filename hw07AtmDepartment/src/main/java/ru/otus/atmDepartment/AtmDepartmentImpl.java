@@ -1,7 +1,6 @@
 package ru.otus.atmDepartment;
 
-import ru.otus.atm.Atm;
-import ru.otus.atm.AtmImpl;
+import ru.otus.atm.AtmListener;
 import ru.otus.atm.enums.AtmErrorType;
 import ru.otus.atm.enums.CcyCode;
 import ru.otus.atm.utils.AtmResponse;
@@ -10,19 +9,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AtmDepartmentImpl implements AtmDepartment {
-    private Map<Integer, Atm> atms;
-    private int atmCount;
+    private List<AtmListener> atmListeners;
 
     public AtmDepartmentImpl() {
-        atmCount = 0;
-        atms = new HashMap<>();
+        atmListeners = new ArrayList<>();
     }
 
     @Override
     public Map<CcyCode, Double> getAtmsTotalBalance() {
         Map<CcyCode, Double> result = new HashMap<>();
-        List<Map<CcyCode, Double>> atmsTotals = atms.keySet().stream()
-                .map(id -> getAtmTotalBalance(id))
+        List<Map<CcyCode, Double>> atmsTotals = atmListeners.stream()
+                .map(AtmDepartmentImpl::getAtmTotalBalance)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -37,29 +34,27 @@ public class AtmDepartmentImpl implements AtmDepartment {
         return result;
     }
 
-    @Override
-    public Optional<Map<CcyCode, Double>> getAtmTotalBalance(int id) {
-        AtmResponse totalResponse = atms.get(id).getAtmTotal();
+    private static Optional<Map<CcyCode, Double>> getAtmTotalBalance(AtmListener atmListener) {
+        AtmResponse totalResponse = atmListener.getAtmTotal();
         if (totalResponse.getErrorType().equals(AtmErrorType.OK))
             return Optional.of((Map<CcyCode, Double>) totalResponse.getValue());
-        System.out.println(String.format("Atm %d got the following error during totals calculation: %s", id, totalResponse.getMessage()));
+        System.out.println(String.format("Atm got the following error during totals calculation: %s", totalResponse.getMessage()));
         return Optional.empty();
     }
 
     @Override
-    public Atm getAtm(int id) {
-        return atms.get(id);
+    public void addAtmListener(AtmListener atmListener) {
+        atmListeners.add(atmListener);
     }
 
     @Override
-    public int addAtm() {
-        atms.put(atmCount, new AtmImpl());
-        return atmCount++;
+    public void removeAtmListener(AtmListener atmListener) {
+        atmListeners.remove(atmListener);
     }
 
     @Override
     public void restoreAtmsToBackups() {
-        atms.values().forEach(Atm::restoreToBackup);
+        atmListeners.forEach(AtmListener::restoreToBackup);
     }
 
 }

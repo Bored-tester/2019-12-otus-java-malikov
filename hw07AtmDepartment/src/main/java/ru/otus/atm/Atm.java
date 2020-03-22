@@ -18,14 +18,12 @@ public interface Atm {
 
     AtmResponse getTotal(CcyCode ccyCode, String token);
 
-    AtmResponse getAtmTotal();
+    AtmListener getListener();
 
     AtmResponse installTray(CcyCode ccyCode, int nominal, int notesCount);
 
     void printOutAtmState();
 
     AtmResponse backup();
-
-    AtmResponse restoreToBackup();
 
 }

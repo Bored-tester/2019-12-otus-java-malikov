@@ -15,7 +15,7 @@ import ru.otus.atm.utils.Banknote;
 import java.util.Map;
 import java.util.Optional;
 
-public class AtmImpl implements Atm {
+public class AtmImpl implements Atm, AtmListener {
     private MoneyStorage moneyStorage;
     private final UserManagementSystem userManagementSystem;
     private AtmAuth atmAuth;
@@ -141,5 +141,10 @@ public class AtmImpl implements Atm {
             System.out.println(e.toString());
             return new AtmResponse(e);
         }
+    }
+
+    @Override
+    public AtmListener getListener() {
+        return this;
     }
 }
