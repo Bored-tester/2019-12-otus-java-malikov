@@ -9,9 +9,9 @@ public interface AtmDepartment {
 
     Map<CcyCode, Double> getAtmsTotalBalance();
 
-    void addAtmListener(AtmListener atmListener);
+    void addAtm(AtmListener atmListener);
 
-    void removeAtmListener(AtmListener atmListener);
+    void removeAtm(AtmListener atmListener);
 
     void restoreAtmsToBackups();
 

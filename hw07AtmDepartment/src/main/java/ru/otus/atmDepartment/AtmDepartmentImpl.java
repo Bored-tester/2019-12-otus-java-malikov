@@ -9,11 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AtmDepartmentImpl implements AtmDepartment {
-    private List<AtmListener> atmListeners;
-
-    public AtmDepartmentImpl() {
-        atmListeners = new ArrayList<>();
-    }
+    private final List<AtmListener> atmListeners = new ArrayList<>();
 
     @Override
     public Map<CcyCode, Double> getAtmsTotalBalance() {
@@ -43,12 +39,12 @@ public class AtmDepartmentImpl implements AtmDepartment {
     }
 
     @Override
-    public void addAtmListener(AtmListener atmListener) {
+    public void addAtm(AtmListener atmListener) {
         atmListeners.add(atmListener);
     }
 
     @Override
-    public void removeAtmListener(AtmListener atmListener) {
+    public void removeAtm(AtmListener atmListener) {
         atmListeners.remove(atmListener);
     }
 

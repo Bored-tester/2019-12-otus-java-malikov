@@ -13,13 +13,13 @@ public class AtmDepartmentTest {
         AtmDepartment atmDepartment = new AtmDepartmentImpl();
         Atm firstAtm = new AtmImpl();
         AtmListener firstAtmListener = firstAtm.getListener();
-        atmDepartment.addAtmListener(firstAtmListener);
+        atmDepartment.addAtm(firstAtmListener);
         System.out.println(String.format("New atm balance: %s", firstAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("Total atm balance: %s", atmDepartment.getAtmsTotalBalance()));
 
         Atm secondAtm = new AtmImpl();
         AtmListener secondAtmListener = secondAtm.getListener();
-        atmDepartment.addAtmListener(secondAtmListener);
+        atmDepartment.addAtm(secondAtmListener);
         System.out.println(String.format("Total atm balance after second atm was added: %s", atmDepartment.getAtmsTotalBalance()));
 
         initFirstAtm(firstAtm);
@@ -45,7 +45,7 @@ public class AtmDepartmentTest {
         System.out.println(String.format("2nd atm balance after restore: %s", secondAtmListener.getAtmTotal().getValue()));
         System.out.println(String.format("\nTotal atm balance after restore: %s\n\n", atmDepartment.getAtmsTotalBalance()));
 
-        atmDepartment.removeAtmListener(firstAtmListener);
+        atmDepartment.removeAtm(firstAtmListener);
         System.out.println(String.format("\nTotal atm balance after first Atm was removed from the department: %s\n\n", atmDepartment.getAtmsTotalBalance()));
     }
 
