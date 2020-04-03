@@ -1,75 +1,99 @@
-# GC comparison
+# Сравнение GC
 
-## Test class
-LeakingClass does the following:
- 1. Generates 40000 objects called Bullets
- 2. Forgets half of them after 0.5 sec
- 3. Stores what is left (20000) in some array, which cause "memory leak"
- 4. Repeat    
+## Тестовый класс
+LeakingClass делает следующее:
+ 1. Создаёт 40000 объектов Bullets
+ 2. Забывает о половине из них через 0.5 секунд
+ 3. Сохраняет оставшиеся (20000) в массиве, что вызывает "утечку памяти"
+ 4. Повторяет в цикле    
 
-Heap size is 1Gb.
-Run parameters (other than GC):
+Размер хипа 1Gb.
+Параметры запуска, исключая сам GC:
 ```java
  -Xms1024m -Xmx1024m -verbose:gc -XX:+PrintGCDetails -XX:-PrintGCTimeStamps -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./logs/dump -XX:+DisableExplicitGC -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCDateStamps -Xloggc:gclog.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=2000k
 ``` 
-I did two runs each with CMS and G1 garbage collectors.  
-Examples of GC logs attached in gcLogs folder.
+Я пронал по два запуска с каждым из следующих сборщиков: ParallelGC, CMS и G1.  
+Примеры логов сборщиков можно найти в папке gcLogs.
 
-## CMS data
-Both runs took around 4 minutes and 13-14 seconds.
+## Данные Parallel GC
+Оба прогона заняли около 4 минут и 44-45 секунд.
+![](images/ScreenshotParallelGC1.png)
+![](images/ScreenshotParallelGC2.png)
+Оба раза программа успела создать 15240000 - 15280000 Bullets (+x, где x < 40000).
+Это означает, что 7620000 - 7640000 Bullets были в памяти и ещё меньше 40000 было сгенерировано на момент падения.
+
+Общее время, на которое приложение было остановлено всеми сборками: 92.41 секунды.  
+Общее время, на которое приложение было остановлено ParallelGC: 1.63 секунды.  
+Общее время, на которое приложение было остановлено Full GC: 90.64 секунды.  
+Общее время, на которое приложение было остановлено VM overhead operations: 0.14 секунды.
+
+Throughput = 67.45%.  
+Количество full GC остановок = 52.  
+Количество GC остановок = 20.  
+Средняя продолжительность gc паузы = 0.08166.  
+Min/max продолжительность gc паузы 0.04413/0.15498s.
+
+## Данные CMS
+Оба прогона заняли около 4 минут и 13-14 секунд.
 ![](images/ScreenshotCMS1.png)
 ![](images/ScreenshotCMS2.png)
-Both runs were able to generate a total of 18440000 Bullets (+x, where x < 40000).
-It means that 9220000 Bullets were stored and <40000 more were generated at the time of out of memory.
+Оба раза программа успела создать 18440000 Bullets (+x, где x < 40000).
+Это означает, что 9220000 Bullets были в памяти и ещё меньше 40000 было сгенерировано на момент падения.
 
-Total time the application was stopped for by all GC: 23.99 seconds.  
-Total time the application was stopped for by CMS GC: 4.91 seconds.  
-Total time the application was stopped for by Full GC: 17.11 seconds.  
-Total time the application was stopped for by VM overhead operations: 1.97865 seconds.
+Общее время, на которое приложение было остановлено всеми сборками: 23.99 секунды.  
+Общее время, на которое приложение было остановлено CMS GC: 4.91 секунды.  
+Общее время, на которое приложение было остановлено Full GC: 17.11 секунды.  
+Общее время, на которое приложение было остановлено VM overhead operations: 1.97865 секунды.
 
 Throughput = 90.52%.  
-Number of full GC pauses = 11.  
-Number of GC pauses = 69.  
-Avg gc pause = 0.07109.  
-Min/max gc pause = 0.00468/0.16058s.  
+Количество full GC остановок = 11.  
+Количество GC остановок = 69.  
+Средняя продолжительность gc паузы = 0.07109.  
+Min/max продолжительность gc паузы = 0.00468/0.16058s.  
 
-## G1 data
-Both runs took around 4 minutes and 52-58 seconds.
+## Данные G1
+Оба прогона заняли около 4 минут и 52-58 секунд.
 ![](images/ScreenshotG1_1.png)
 ![](images/ScreenshotG1_2.png)
-Both runs were able to generate a total of 19480000 Bullets (+x, where x < 40000).
-It means that 9740000 Bullets were stored and <40000 more were generated at the time of out of memory.
+Оба раза программа успела создать 19480000 Bullets (+x, где x < 40000).
+Это означает, что 9740000 Bullets были в памяти и ещё меньше 40000 было сгенерировано на момент падения.
 
-Total time the application was stopped for by all GC: 59 seconds.  
-Total time the application was stopped for by CMS GC: 3.26 seconds.  
-Total time the application was stopped for by Full GC: 48.55 seconds.  
-Total time the application was stopped for by VM overhead operations: 7.18411 seconds.  
+Общее время, на которое приложение было остановлено всеми сборками: 59 секунд.  
+Общее время, на которое приложение было остановлено CMS GC: 3.26 секунды.  
+Общее время, на которое приложение было остановлено Full GC: 48.55 секунды.  
+Общее время, на которое приложение было остановлено VM overhead operations: 7.18411 секунды.  
 
 Throughput = 80.17%.  
-Number of full GC pauses = 31.  
-Number of GC pauses = 119.  
-Avg gc pause = 0.02742.  
-Min/max gc pause = 0.00068/0.21177s.  
+Количество full GC остановок = 31.  
+Количество GC остановок = 119.  
+Средняя продолжительность gc паузы = 0.02742.  
+Min/max продолжительность gc паузы 0.00068/0.21177s.  
 
-## Comparison
+## Сравнение
 
-1. In terms of CPU load there is no considerable difference. 
-In both cases GC rarely consumed more than 10% and these spikes started to appear only when we were 
-getting close to the limit. However CMS spend around 50 seconds on concurrent (agains 7.2 seconds for G1) work without 
-stopping the application which means more CPU usage.
+1. С точки зрения загрузки CPU нет большой разницы между CMS и G1:
+в обоих случаях GC редко потреблял больше 10% и такая нагрузка проявлялась только, когды приложение начало
+приближаться к пределу своей памяти; однако, CMS работал 50 секунд совместно с приложением (против 7.2 секунд у G1), что
+подразумевает больший расход CPU ресурсов, пока программа работала.  
+Parallel GC потреблял CPU только во воремя пауз, но во время сборок выедал весь CPU (80%-90%), что может создавать проблемы для 
+других приложений на той же машине.
 
-2. In terms of Heap usage we can see that G1 GC lasted considerably longer and managed to store 
-520000 Bullets more (around 5%) before failing (probably due to lowering young generation space). But it worked slower 
-as 5% growth in objects count came at a cost of 16% increase of all time execution which was mostly to a bigger number 
-of full gc pauses.  
-Not sure if it is a pro or a con. Pro - if you don't care much about reliability, con - otherwise.  
-Anyway G1 seems to be better in terms of surviving extreme loads but worse in case of leaks, as it agonizes longer.
+2. С точки зрения испольщования хипа, мы видим, что G1 продержался ощутимо дольше остальных и смог сохарнить на ~5% 
+больше Bullets, чем CMS и на ~28% больше, чем parallel GC. Скорее всего, благодаря динамическом уменьшению памяти, 
+выделенной под young generation. Но он работал менее эффективно, чем CMS, так как прирост в 5% памяти дался ему за счёт
+увеличения общего времени работы на 16%.  
+Не уверен, считать ли это плюсом или минусом. Если важно иметь гарантированное время отклика - то это, скорее минус, 
+если важнее "живучесть", то плюс.
+Также ParallelGC в момент падения утилизировал лишь 81% хипа, CMS и G1 приблизились к 100%.
 
-3. On average G1 pauses are much shorter (more than two times), which means better response times, but there are a 
-lot more of them. If response time is critical, G1 would be more suitable.  
-Although there is an issue with much longer time spent on overhead VM operations in G1 case and average pauses there 
-are bigger than for CMS. But these might be cause only by the last agonising seconds of work.
+3. G1 имеет самые короткие средние и минимальные GC паузы, но и самые долгие большие (когда находился близко к пределу),
+что озаначает лучшее гарантированное время отклика приложения. На втором месте CMS, на третьем - Parallel GC, но 
+количество пауз в G1 самое большое, потом CMS, потом Parallel GC. 
+но стоит отметить, что G1 потратил намного больше времени на overhead VM operations, но, возможно, это всё благодаря 
+последним тяжёлым секундам работы.  
+Приложение с CMS GC упало быстрее всего, после достижения предела памяти (меньше всех висело в последней GC паузе). 
 
-4. G1 is less predictable. Memory usage graph is more chaotic. CMS is more consistent but more rigid in terms of 
-memory allocation strategies.
+4. G1 имеет более хаотичное поведение, он может динамически менять размер частей хипа, исхордя из текущих потребностей. 
+CMS и Parallel GC имеют больее простое предсказуемое поведение. Parallel GC стоит использовать, если к приложению нету 
+строгих требований по времени отклика, если нет большой конкуренции за CPU. В противном случае, G1 и CMS - лучший выбор.
 
