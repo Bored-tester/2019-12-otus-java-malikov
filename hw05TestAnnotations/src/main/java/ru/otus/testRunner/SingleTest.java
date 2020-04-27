@@ -11,10 +11,10 @@ import java.util.List;
 
 @AllArgsConstructor
 class SingleTest {
-    List<Method> beforeMethods;
-    List<Method> afterMethods;
-    Method testMethod;
-    Object testingClassObject;
+    private List<Method> beforeMethods;
+    private List<Method> afterMethods;
+    private Method testMethod;
+    private Object testingClassObject;
 
     TestResult execute() {
         TestResult testResult = new TestResult(TestStatus.SUCCESS, testMethod.getName(), null);
