@@ -17,9 +17,4 @@ public class ProxyDemo {
         myClass.bleedForTheBloodGod(myClass);
     }
 
-//    @Log
-//    private static void bleedForTheBloodGod(MyClassImpl myClass) {
-//        System.out.println("Doing something with myClass " + myClass);
-//    }
-
 }
