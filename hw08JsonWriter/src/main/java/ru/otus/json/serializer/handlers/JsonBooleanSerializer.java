@@ -1,13 +1,13 @@
 package ru.otus.json.serializer.handlers;
 
-public class JsonBooleanSerializer extends JsonElementSerializer {
+import lombok.AllArgsConstructor;
 
-    public JsonBooleanSerializer(Object objectToSerialize) {
-        super(objectToSerialize);
-    }
+@AllArgsConstructor
+public class JsonBooleanSerializer implements JsonElementSerializer {
+    private Object booleanToSerialize;
 
     @Override
     public String convertValueToJsonFormat() {
-        return String.format("%s", objectToSerialize);
+        return String.format("%s", booleanToSerialize);
     }
 }

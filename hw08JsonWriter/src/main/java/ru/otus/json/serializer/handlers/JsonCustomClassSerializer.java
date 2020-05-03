@@ -6,11 +6,12 @@ import ru.otus.json.serializer.JsonSerializer;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-public class JsonCustomClassSerializer extends JsonElementSerializer {
+public class JsonCustomClassSerializer implements JsonElementSerializer {
+    private Object objectToSerialize;
     private Field[] classFields;
 
     public JsonCustomClassSerializer(Object objectToSerialize) {
-        super(objectToSerialize);
+        this.objectToSerialize = objectToSerialize;
         this.classFields = objectToSerialize.getClass().getDeclaredFields();
     }
 

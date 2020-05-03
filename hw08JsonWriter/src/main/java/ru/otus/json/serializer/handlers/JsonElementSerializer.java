@@ -1,10 +1,6 @@
 package ru.otus.json.serializer.handlers;
 
-import lombok.AllArgsConstructor;
+public interface JsonElementSerializer {
 
-@AllArgsConstructor
-public abstract class JsonElementSerializer {
-    protected Object objectToSerialize;
-
-    public abstract String convertValueToJsonFormat();
+    String convertValueToJsonFormat();
 }

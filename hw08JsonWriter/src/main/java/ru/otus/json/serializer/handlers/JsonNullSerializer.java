@@ -1,9 +1,6 @@
 package ru.otus.json.serializer.handlers;
 
-public class JsonNullSerializer extends JsonElementSerializer {
-    public JsonNullSerializer(Object objectToSerialize) {
-        super(objectToSerialize);
-    }
+public class JsonNullSerializer implements JsonElementSerializer {
 
     @Override
     public String convertValueToJsonFormat() {

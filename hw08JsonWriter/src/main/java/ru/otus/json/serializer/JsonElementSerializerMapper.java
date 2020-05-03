@@ -10,7 +10,7 @@ import java.util.Map;
 class JsonElementSerializerMapper {
     static JsonElementSerializer getJsonElementSerializer(Object serializedObject) {
         if (serializedObject == null)
-            return new JsonNullSerializer(serializedObject);
+            return new JsonNullSerializer();
 
         Class classOfSerializedObject = serializedObject.getClass();
 

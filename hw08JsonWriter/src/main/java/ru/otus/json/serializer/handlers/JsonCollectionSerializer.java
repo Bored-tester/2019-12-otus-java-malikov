@@ -1,19 +1,19 @@
 package ru.otus.json.serializer.handlers;
 
+import lombok.AllArgsConstructor;
 import ru.otus.json.serializer.JsonSerializer;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class JsonCollectionSerializer extends JsonElementSerializer {
+@AllArgsConstructor
+public class JsonCollectionSerializer implements JsonElementSerializer {
 
-    public JsonCollectionSerializer(Object objectToSerialize) {
-        super(objectToSerialize);
-    }
+    private Object collectionObjectToSerialize;
 
     @Override
     public String convertValueToJsonFormat() {
-        Collection collectionToSerialize = (Collection) objectToSerialize;
+        Collection collectionToSerialize = (Collection) collectionObjectToSerialize;
         return (String) collectionToSerialize
                 .stream()
                 .map(JsonSerializer::toJson)
