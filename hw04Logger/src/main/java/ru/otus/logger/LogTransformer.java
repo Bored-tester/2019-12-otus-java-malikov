@@ -26,7 +26,7 @@ public class LogTransformer implements ClassFileTransformer {
     public static List<Method> getMethodsAnnotatedWithLog(final Class<?> type) {
         final List<Method> methods = new ArrayList<Method>();
         Class<?> klass = type;
-        // iterate though the list of methods declared in the class represented by klass variable, and add those annotated with the specified annotation
+        // iterate though the list of methods declared in the class represented by klass variable, and add those annotated with the specified annotations
         final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(klass.getDeclaredMethods()));
         for (final Method method : allMethods) {
             if (method.isAnnotationPresent(Log.class)) {
