@@ -21,6 +21,7 @@
         <module>hw05TestAnnotations</module>
         <module>hw06ATM</module>
         <module>hw07AtmDepartment</module>
+        <module>hw08JsonWriter</module>
     </modules>
 
     <properties>
@@ -29,6 +30,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <com.google.guava.version>28.2-jre</com.google.guava.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+        <javax.json.version>1.1.4</javax.json.version>
     </properties>
 
     <dependencyManagement>
