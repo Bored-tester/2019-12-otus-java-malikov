@@ -34,7 +34,7 @@ public class DbServiceDemo {
         EntityDao entityDao = new EntityDaoJdbc(sessionManager, sqlMapper);
 
         DBService<User> dbService = new DbServiceImpl(entityDao);
-        long id = dbService.saveEntityToDb(new User(0, "Onizuka Ekichi", 22));
+        long id = dbService.saveEntityToDb(new User("Onizuka Ekichi", 22));
         Optional<User> optionalUser = dbService.getEntityById(User.class, id);
         User user = optionalUser.orElseThrow(() -> new AssertionError("User was not created"));
         System.out.println("Selected user: " + user);
@@ -47,7 +47,7 @@ public class DbServiceDemo {
         EntityDao accountDao = new EntityDaoJdbc(sessionManager, sqlAccountMapper);
 
         DBService<Account> dbServiceAccount = new DbServiceImpl(accountDao);
-        long no = dbServiceAccount.saveEntityToDb(new Account(null, "Totoro", 100));
+        long no = dbServiceAccount.saveEntityToDb(new Account("Totoro", 100));
         Optional<Account> optionalAccount = dbServiceAccount.getEntityById(Account.class, no);
         Account account = optionalAccount.orElseThrow(() -> new AssertionError("User was not created"));
         System.out.println("Selected Account: " + account);

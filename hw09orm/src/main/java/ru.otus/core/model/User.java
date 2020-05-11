@@ -1,16 +1,19 @@
 package ru.otus.core.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ru.otus.core.annotations.Id;
 
 @Getter
-@AllArgsConstructor
 public class User {
     @Id
-    private final long id;
+    private long id;
     private final String name;
     private final int age;
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 
     @Override
     public String toString() {

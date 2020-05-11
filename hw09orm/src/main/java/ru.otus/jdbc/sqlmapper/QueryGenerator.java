@@ -1,6 +1,6 @@
 package ru.otus.jdbc.sqlmapper;
 
-import ru.otus.jdbc.sqlmapper.model.MetaObject;
+import ru.otus.jdbc.sqlmapper.metaObject.model.MetaObject;
 
 import java.util.stream.Collectors;
 

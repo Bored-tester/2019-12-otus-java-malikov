@@ -1,8 +1,8 @@
-package ru.otus.jdbc.sqlmapper;
+package ru.otus.jdbc.sqlmapper.metaObject;
 
 import ru.otus.core.annotations.Id;
-import ru.otus.jdbc.sqlmapper.model.MetaObject;
-import ru.otus.jdbc.sqlmapper.model.ParsedField;
+import ru.otus.jdbc.sqlmapper.metaObject.model.MetaObject;
+import ru.otus.jdbc.sqlmapper.metaObject.model.ParsedField;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

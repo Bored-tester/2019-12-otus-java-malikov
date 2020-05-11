@@ -1,4 +1,4 @@
-package ru.otus.jdbc.sqlmapper.model;
+package ru.otus.jdbc.sqlmapper.metaObject.model;
 
 import lombok.Builder;
 import lombok.Getter;
