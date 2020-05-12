@@ -23,6 +23,7 @@
         <module>hw07AtmDepartment</module>
         <module>hw08JsonWriter</module>
         <module>hw09orm</module>
+        <module>hw10hibernate</module>
     </modules>
 
     <properties>
