@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Пользователи</title>
+    <script>
+        function createUser() {
+            const userDataContainer = document.getElementById('userDataContainer');
+
+            var user = new Object();
+            user.name = document.getElementById('userNameTextBox').value;
+            user.login = document.getElementById('userLoginTextBox').value;
+            user.password = document.getElementById('userPasswordTextBox').value;
+            user.role = document.getElementById('userRoleSelector').value;
+            user.address = document.getElementById('userAddressTextBox').value;
+            user.phones = document.getElementById('userPhonesTextBox').value.split(',');
+
+            //fetch('api/user?id=' + id)
+            fetch('api/user/create', {
+                credentials: 'include',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then(response => response.json())
+                .then(user => userDataContainer.innerHTML = 'Created user: ' + JSON.stringify(user));
+        }
+
+    </script>
+</head>
+
+<body>
+<h4>Создать пользователя</h4>
+<input type="text" id="userNameTextBox" value="Иван" placeholder="Введите имя пользователя" size="25">
+<input type="text" id="userLoginTextBox" value="Король" placeholder="Введите логин пользователя" size="30">
+<input type="text" id="userPasswordTextBox" value="Иван123" placeholder="Введите пароль пользователя" size="30">
+<select id="userRoleSelector" name="roles">
+    <option value="ADMIN">admin</option>
+    <option value="MORTAL">mortal</option>
+</select>
+<input type="text" id="userAddressTextBox" value="Ивановка, третья хата справа" placeholder="Введите адрес пользователя"
+       size="50">
+<input type="text" id="userPhonesTextBox" value="+7777777777,8926926926"
+       placeholder="Введите телефоны пользователя через запятую" size="50">
+<button onclick="createUser()">Создать</button>
+<pre id="userDataContainer"></pre>
+
+<h4>Существующие пользователи</h4>
+<button onClick="window.location.reload();">Загрузить список пользователей</button>
+<table>
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 150px">Логин</td>
+        <td style="width: 100px">Пароль</td>
+        <td style="width: 150px">Роль</td>
+        <td style="width: 350px">Адрес</td>
+        <td style="width: 450px">Телефоны</td>
+    </tr>
+    </thead>
+    <tbody>
+    <#list users as user>
+        <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.login}</td>
+            <td>${user.password}</td>
+            <td>${user.role}</td>
+            <td>${user.address}</td>
+            <td><#list user.phones as phone>${phone}<#sep>,</#list></td>
+        </tr>
+    </#list>
+    </tbody>
+</table>
+</body>
+</html>

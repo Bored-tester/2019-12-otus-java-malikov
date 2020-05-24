@@ -24,6 +24,7 @@
         <module>hw08JsonWriter</module>
         <module>hw09orm</module>
         <module>hw10hibernate</module>
+        <module>hw12WebServer</module>
     </modules>
 
     <properties>
