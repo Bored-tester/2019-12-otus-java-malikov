@@ -10,15 +10,11 @@ import ru.otus.database.core.model.PhoneDataSet;
 import ru.otus.database.core.model.User;
 import ru.otus.database.core.service.DBServiceUser;
 import ru.otus.database.hibernate.HibernateUtils;
-import ru.otus.services.DbServiceUserImpl;
 import ru.otus.database.hibernate.dao.UserDaoHibernate;
 import ru.otus.database.hibernate.sessionmanager.SessionManagerHibernate;
 import ru.otus.server.UsersWebServer;
 import ru.otus.server.UsersWebServerWithFilterBasedSecurity;
-import ru.otus.services.TemplateProcessor;
-import ru.otus.services.TemplateProcessorImpl;
-import ru.otus.services.UserAuthService;
-import ru.otus.services.UserAuthServiceImpl;
+import ru.otus.services.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

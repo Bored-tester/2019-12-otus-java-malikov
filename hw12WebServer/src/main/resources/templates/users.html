@@ -26,6 +26,7 @@
                 .then(user => userDataContainer.innerHTML = 'Created user: ' + JSON.stringify(user));
         }
 
+
     </script>
 </head>
 
@@ -60,7 +61,7 @@
     </tr>
     </thead>
     <tbody>
-    <#list users as user>
+        <#list users as user>
         <tr>
             <td>${user.id}</td>
             <td>${user.name}</td>
@@ -70,7 +71,7 @@
             <td>${user.address}</td>
             <td><#list user.phones as phone>${phone}<#sep>,</#list></td>
         </tr>
-    </#list>
+        </#list>
     </tbody>
 </table>
 </body>

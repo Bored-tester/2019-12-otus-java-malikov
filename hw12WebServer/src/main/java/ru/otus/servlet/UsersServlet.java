@@ -37,11 +37,11 @@ public class UsersServlet extends HttpServlet {
             Map<String, Object> usersMap = new HashMap<>();
             usersMap.put(TEMPLATE_ATTR_USERS, allUsers);
 
-                try {
-                    response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, usersMap));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, usersMap));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

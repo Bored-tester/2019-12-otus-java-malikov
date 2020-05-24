@@ -36,10 +36,10 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public Optional<User> findByLogin(String login){
+    public Optional<User> findByLogin(String login) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            return Optional.ofNullable((User)currentSession
+            return Optional.ofNullable((User) currentSession
                     .getHibernateSession()
                     .createQuery("from User where login =:login")
                     .setParameter("login", login)
