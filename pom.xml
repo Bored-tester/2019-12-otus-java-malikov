@@ -25,6 +25,8 @@
         <module>hw09orm</module>
         <module>hw10hibernate</module>
         <module>hw11cache</module>
+        <module>hw12WebServer</module>
+  <module>hw12WebServer</module>
     </modules>
 
     <properties>
