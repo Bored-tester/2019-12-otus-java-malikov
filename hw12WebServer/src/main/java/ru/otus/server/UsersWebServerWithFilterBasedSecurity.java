@@ -15,7 +15,7 @@ import ru.otus.services.UserAuthService;
 import ru.otus.servlet.AuthorizationFilter;
 import ru.otus.servlet.LoginServlet;
 import ru.otus.servlet.UsersServlet;
-import ru.otus.servlet.api.user.UsersApiServlet;
+import ru.otus.servlet.api.user.CreateUserApiServlet;
 
 import java.util.Arrays;
 
@@ -91,7 +91,7 @@ public class UsersWebServerWithFilterBasedSecurity implements UsersWebServer {
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, userDao)), "/users");
-        servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userDao, gson)), "/api/user/*");
+        servletContextHandler.addServlet(new ServletHolder(new CreateUserApiServlet(userDao, gson)), "/api/user/create");
         return servletContextHandler;
     }
 }

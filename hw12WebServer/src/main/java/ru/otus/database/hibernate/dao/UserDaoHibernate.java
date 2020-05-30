@@ -11,6 +11,7 @@ import ru.otus.database.core.sessionmanager.SessionManager;
 import ru.otus.database.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.database.hibernate.sessionmanager.SessionManagerHibernate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,14 +52,14 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public Optional<List<User>> getAll() {
+    public List<User> getAll() {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            return Optional.of(currentSession.getHibernateSession().createQuery("from User", User.class).getResultList());
+            return currentSession.getHibernateSession().createQuery("from User", User.class).getResultList();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return Optional.empty();
+        return Collections.emptyList();
     }
 
 

@@ -31,7 +31,7 @@ public class UsersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         try (SessionManager sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
-            List<User> allUsers = userDao.getAll().orElse(null);
+            List<User> allUsers = userDao.getAll();
 
             response.setContentType("text/html");
             Map<String, Object> usersMap = new HashMap<>();

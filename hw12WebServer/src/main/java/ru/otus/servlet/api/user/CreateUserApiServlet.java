@@ -15,23 +15,18 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 
-public class UsersApiServlet extends HttpServlet {
+public class CreateUserApiServlet extends HttpServlet {
 
     private final UserDao userDao;
     private final Gson gson;
 
-    public UsersApiServlet(UserDao userDao, Gson gson) {
+    public CreateUserApiServlet(UserDao userDao, Gson gson) {
         this.userDao = userDao;
         this.gson = gson;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!request.getPathInfo().equals("/create")) {
-            System.out.println(String.format("ERROR! Incorrect url:\n%s", request.getRequestURI()));
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        }
         String unparsedUser = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {

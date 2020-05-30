@@ -11,7 +11,7 @@ public interface UserDao {
 
     Optional<User> findByLogin(String login);
 
-    Optional<List<User>> getAll();
+    List<User> getAll();
 
     long saveUser(User user);
 
