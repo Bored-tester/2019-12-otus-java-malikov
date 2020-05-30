@@ -6,32 +6,34 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class MyCache<K, V> implements HwCache<K, V> {
-    private final Map<K, V> cache = new WeakHashMap();
+    private final Map<K, V> cache = new WeakHashMap<>();
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
+        listeners.forEach(listener -> listener.notify(key, value, "put"));
         synchronized (cache) {
-            listeners.forEach(listener -> listener.notify(key, value, "put"));
             cache.put(key, value);
         }
     }
 
     @Override
     public void remove(K key) {
+        V value;
         synchronized (cache) {
-            V value = cache.remove(key);
-            listeners.forEach(listener -> listener.notify(key, value, "remove"));
+            value = cache.remove(key);
         }
+        listeners.forEach(listener -> listener.notify(key, value, "remove"));
     }
 
     @Override
     public V get(K key) {
+        V value;
         synchronized (cache) {
-            V value = cache.get(key);
-            listeners.forEach(listener -> listener.notify(key, value, "get"));
-            return value;
+            value = cache.get(key);
         }
+        listeners.forEach(listener -> listener.notify(key, value, "get"));
+        return value;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class DbServiceUserImpl implements DBServiceUser {
         HwListener<Long, User> listener = new HwListener<Long, User>() {
             @Override
             public void notify(Long key, User value, String action) {
-                logger.info("key:{}, value:{}, action: {}", key, value, action);
+                logger.info("key:{}\nvalue:{}\naction: {}", key, value, action);
             }
         };
         userCache.addListener(listener);
@@ -60,8 +60,9 @@ public class DbServiceUserImpl implements DBServiceUser {
             sessionManager.beginSession();
             try {
                 Optional<User> userOptional = userDao.findById(id);
-                if (userOptional.isPresent())
-                    userCache.put(id, userOptional.get());
+                userOptional.ifPresent(value -> userCache.put(id, value));
+//                if (userOptional.isPresent())
+//                    userCache.put(id, userOptional.get());
                 logger.info("user: {}", userOptional.orElse(null));
                 return userOptional;
             } catch (Exception e) {
