@@ -30,12 +30,11 @@ public class AuthorizationFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null) {
-            response.sendRedirect("/login");
+        if ((session == null) && (!uri.equals(request.getContextPath() + "/login"))) {
+            response.sendRedirect(request.getContextPath() + "/login");
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
-
     }
 
     @Override

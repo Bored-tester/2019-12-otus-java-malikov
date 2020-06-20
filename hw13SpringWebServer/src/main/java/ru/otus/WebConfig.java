@@ -1,6 +1,5 @@
 package ru.otus;
 
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,8 +11,6 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-
-import java.util.Arrays;
 
 @Configuration
 @ComponentScan
@@ -59,11 +56,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/**").addResourceLocations("/WEB-INF/static/");
     }
 
-//    @Bean
-//    ServletRegistrationBean myServletRegistration () {
-//        ServletRegistrationBean srb = new ServletRegistrationBean();
-//        srb.setServlet(new MyServlet());
-//        srb.setUrlMappings(Arrays.asList("/path2/*"));
-//        return srb;
-//    }
 }

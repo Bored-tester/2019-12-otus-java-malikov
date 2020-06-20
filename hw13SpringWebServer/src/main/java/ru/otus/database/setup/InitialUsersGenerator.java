@@ -1,6 +1,5 @@
 package ru.otus.database.setup;
 
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,13 +14,12 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-@AllArgsConstructor
 public class InitialUsersGenerator implements InitialDataGenerator {
     private static final Logger logger = LoggerFactory.getLogger(InitialUsersGenerator.class);
     private final DbUserService dbUserService;
 
-    @Override
-    public void initialDataSetup(){
+    public InitialUsersGenerator(DbUserService dbUserService) {
+        this.dbUserService = dbUserService;
         logger.info("Going to init starting users");
         createAngel();
         createDemon();
@@ -29,7 +27,7 @@ public class InitialUsersGenerator implements InitialDataGenerator {
         logger.info("Starting users initialized");
     }
 
-    private void createOleg(){
+    private void createOleg() {
         AddressDataSet olegAddress = new AddressDataSet("Omsk");
         List<PhoneDataSet> olegPhones = Collections.singletonList(new PhoneDataSet("let-me-out"));
         User oleg = new User("Oleg", "Gaben", "1234", UserRole.MORTAL, olegAddress, olegPhones);
@@ -37,8 +35,8 @@ public class InitialUsersGenerator implements InitialDataGenerator {
         dbUserService.saveUser(oleg);
     }
 
-    private void createAngel(){
-      AddressDataSet angelAddress = new AddressDataSet("Heaven");
+    private void createAngel() {
+        AddressDataSet angelAddress = new AddressDataSet("Heaven");
         List<PhoneDataSet> angelsPhones = Collections.singletonList(new PhoneDataSet("777-777-777"));
         User angel = new User("Aziraphale", "angel3000", "qwerty", UserRole.ADMIN, angelAddress, angelsPhones);
 
@@ -46,7 +44,7 @@ public class InitialUsersGenerator implements InitialDataGenerator {
         dbUserService.getUser(angelId);
     }
 
-    private void createDemon(){
+    private void createDemon() {
         AddressDataSet demonAddress = new AddressDataSet("Hell");
         PhoneDataSet demonsPhone1 = new PhoneDataSet("666-666-666");
         PhoneDataSet demonsPhone2 = new PhoneDataSet("13-13-13");

@@ -7,7 +7,6 @@ import ru.otus.filters.AuthorizationFilter;
 import javax.servlet.Filter;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-    //https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -26,7 +25,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Filter[] getServletFilters() {
-        AuthorizationFilter authorizationFilter  = new AuthorizationFilter();
+        AuthorizationFilter authorizationFilter = new AuthorizationFilter();
 
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
         encodingFilter.setEncoding("UTF-8");

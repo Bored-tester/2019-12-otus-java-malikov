@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.otus.database.core.dao.UserDao;
 import ru.otus.database.core.model.User;
-import ru.otus.database.core.service.DbUserService;
 import ru.otus.database.core.service.DbServiceException;
-import ru.otus.database.core.sessionmanager.SessionManager;
+import ru.otus.database.core.service.DbUserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,38 +23,34 @@ public class DbUserServiceImpl implements DbUserService {
 
     @Override
     public long saveUser(User user) {
-        try (SessionManager sessionManager = userDao.getSessionManager()) {
-            sessionManager.beginSession();
-            try {
-                long userId = userDao.saveUser(user);
-                sessionManager.commitSession();
+        try {
+            long userId = userDao.saveUser(user);
 
-                logger.info("created user: {}", userId);
-                return userId;
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                sessionManager.rollbackSession();
-                throw new DbServiceException(e);
-            }
+            logger.info("created user: {}", userId);
+            return userId;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new DbServiceException(e);
         }
     }
 
 
     @Override
     public Optional<User> getUser(long id) {
-        try (SessionManager sessionManager = userDao.getSessionManager()) {
-            sessionManager.beginSession();
-            try {
-                Optional<User> userOptional = userDao.findById(id);
+        try {
+            Optional<User> userOptional = userDao.findById(id);
 
-                logger.info("user: {}", userOptional.orElse(null));
-                return userOptional;
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                sessionManager.rollbackSession();
-            }
-            return Optional.empty();
+            logger.info("user: {}", userOptional.orElse(null));
+            return userOptional;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userDao.getAll();
     }
 
 }

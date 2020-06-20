@@ -9,7 +9,6 @@ import ru.otus.database.core.dao.UserDao;
 import ru.otus.database.core.dao.UserDaoException;
 import ru.otus.database.core.model.User;
 import ru.otus.database.core.sessionmanager.SessionManager;
-import ru.otus.database.core.sessionmanager.SessionManagerException;
 import ru.otus.database.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.database.hibernate.sessionmanager.SessionManagerHibernate;
 
@@ -30,63 +29,68 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public Optional<User> findById(long id) {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
-        try {
-            return Optional.ofNullable(currentSession.getHibernateSession().find(User.class, id));
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        try (sessionManager) {
+            sessionManager.beginSession();
+            DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+            try {
+                return Optional.ofNullable(currentSession.getHibernateSession().find(User.class, id));
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
-        try {
-            return Optional.ofNullable((User) currentSession
-                    .getHibernateSession()
-                    .createQuery("from User where login =:login")
-                    .setParameter("login", login)
-                    .uniqueResult());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        try (sessionManager) {
+            sessionManager.beginSession();
+            DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+            try {
+                return Optional.ofNullable((User) currentSession
+                        .getHibernateSession()
+                        .createQuery("from User where login =:login")
+                        .setParameter("login", login)
+                        .uniqueResult());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
     public List<User> getAll() {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
-        try {
-            return currentSession.getHibernateSession().createQuery("from User", User.class).getResultList();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        try (sessionManager) {
+            sessionManager.beginSession();
+            DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+            try {
+                return currentSession.getHibernateSession().createQuery("from User", User.class).getResultList();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
 
     @Override
     public long saveUser(User user) {
-//        try (SessionManager sessionManager = userDao.getSessionManager()) {
-//            sessionManager.beginSession();
-//            userDao.saveUser(user);
-//        } catch (SessionManagerException e) {
-//            throw new UserDaoException(e);
-//        }
-        sessionManager.beginSession();
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
-        try {
-            Session hibernateSession = currentSession.getHibernateSession();
-            if (user.getId() > 0) {
-                hibernateSession.merge(user);
-            } else {
-                hibernateSession.persist(user);
+        try (sessionManager) {
+            sessionManager.beginSession();
+            DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+            try {
+                Session hibernateSession = currentSession.getHibernateSession();
+                if (user.getId() > 0) {
+                    hibernateSession.merge(user);
+                } else {
+                    hibernateSession.persist(user);
+                }
+                return user.getId();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                throw new UserDaoException(e);
             }
-            return user.getId();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new UserDaoException(e);
         }
 
     }

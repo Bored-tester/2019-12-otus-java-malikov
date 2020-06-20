@@ -2,11 +2,11 @@ package ru.otus.controllers.user;
 
 import com.google.gson.Gson;
 import org.springframework.stereotype.Component;
+import ru.otus.controllers.user.model.InputUser;
 import ru.otus.database.core.enums.UserRole;
 import ru.otus.database.core.model.AddressDataSet;
 import ru.otus.database.core.model.PhoneDataSet;
 import ru.otus.database.core.model.User;
-import ru.otus.controllers.user.model.InputUser;
 
 import java.util.Arrays;
 import java.util.List;
