@@ -28,6 +28,7 @@
         <module>hw12WebServer</module>
   <module>hw12WebServer</module>
         <module>hw13SpringWebServer</module>
+        <module>hw14JMM</module>
     </modules>
 
     <properties>
