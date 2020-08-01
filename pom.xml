@@ -26,9 +26,9 @@
         <module>hw10hibernate</module>
         <module>hw11cache</module>
         <module>hw12WebServer</module>
-  <module>hw12WebServer</module>
         <module>hw13SpringWebServer</module>
         <module>hw14JMM</module>
+        <module>hw15SpringWebServerWithMessaging</module>
     </modules>
 
     <properties>
