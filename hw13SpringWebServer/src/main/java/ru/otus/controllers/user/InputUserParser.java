@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class InputUserParser {
-    public User parseIputUser(String inputUserJson) throws IllegalArgumentException {
+    public User parseInputUser(String inputUserJson) throws IllegalArgumentException {
         InputUser unparsedUser = new Gson().fromJson(inputUserJson, InputUser.class);
         List<PhoneDataSet> phones = Arrays.stream(unparsedUser.getPhones())
                 .map(PhoneDataSet::new)
