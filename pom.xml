@@ -17,6 +17,7 @@
     <modules>
         <module>hw01maven</module>
         <module>hw02ArrayList</module>
+        <module>hw03GC</module>
         <module>hw04Logger</module>
         <module>hw05TestAnnotations</module>
         <module>hw06ATM</module>
@@ -26,7 +27,6 @@
         <module>hw10hibernate</module>
         <module>hw11cache</module>
         <module>hw12WebServer</module>
-  <module>hw12WebServer</module>
         <module>hw13SpringWebServer</module>
         <module>hw14JMM</module>
     </modules>
