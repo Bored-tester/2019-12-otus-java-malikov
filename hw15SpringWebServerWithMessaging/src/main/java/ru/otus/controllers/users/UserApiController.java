@@ -3,6 +3,7 @@ package ru.otus.controllers.users;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,42 +27,37 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Controller
-public class UserController {
+public class UserApiController {
 
-    private static final String USERS_PAGE_TEMPLATE = "users.html";
-    private static final String TEMPLATE_ATTR_USERS = "users";
-    private static final int GET_ALL_USERS_TIMEOUT_IN_SECONDS = 10;
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+//    private static final String USERS_PAGE_TEMPLATE = "users.html";
+//    private static final String TEMPLATE_ATTR_USERS = "users";
+//    private static final int GET_ALL_USERS_TIMEOUT_IN_SECONDS = 10;
+    private static final Logger logger = LoggerFactory.getLogger(UserApiController.class);
 
     private final InputUserParser inputUserParser;
     private final MsClient messageClient;
     @Getter
     private final Map<UUID, List<User>> usersResponseMap = new ConcurrentHashMap<>();
 
-    public UserController(InputUserParser inputUserParser, MessageSystem messageSystem) {
+    public UserApiController(InputUserParser inputUserParser, MessageSystem messageSystem, GetAllUsersReponseHandler getAllUsersReponseHandler) {
         this.inputUserParser = inputUserParser;
         messageClient = new MsClientImpl(ClientNameDictionary.USER_CONTROLLER_CLIENT_NAME.getName(), messageSystem);
-        messageClient.addHandler(MessageType.GET_USERS_DATA, new GetAllUsersReponseHandler(this));
+        messageClient.addHandler(MessageType.GET_USERS_DATA, getAllUsersReponseHandler);
         messageSystem.addClient(messageClient);
     }
 
     @PostMapping("/api/user/create")
-    public String userCreateView(HttpServletRequest request) throws IOException {
+    public void userCreateView(HttpServletRequest request) throws IOException {
         String unparsedUser = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         User user = inputUserParser.parseIputUser(unparsedUser);
         Message createUserMessage = messageClient.produceMessage(ClientNameDictionary.DATABASE_SERVICE_CLIENT_NAME.getName(), user, MessageType.CREATE_USER);
         messageClient.sendMessage(createUserMessage);
-        return USERS_PAGE_TEMPLATE;
     }
 
-    @GetMapping("/users")
-    protected String getAllUsers(Model model) {
+    @GetMapping("/api/users")
+    protected void getAllUsers(HttpServletRequest request) {
         Message getAllUsersMessage = messageClient.produceMessage(ClientNameDictionary.DATABASE_SERVICE_CLIENT_NAME.getName(), null, MessageType.GET_USERS_DATA);
         messageClient.sendMessage(getAllUsersMessage);
-
-        List<User> listOfAllUsers = Waiter.waitForMessagePayloadInMap(getAllUsersMessage.getId(), usersResponseMap, GET_ALL_USERS_TIMEOUT_IN_SECONDS).orElse(null);
-        model.addAttribute(TEMPLATE_ATTR_USERS, listOfAllUsers);
-        return USERS_PAGE_TEMPLATE;
     }
 }
