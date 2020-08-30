@@ -3,14 +3,10 @@ package ru.otus.controllers.user;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.database.core.model.User;
 import ru.otus.database.core.service.DbUserService;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class UsersPageController {

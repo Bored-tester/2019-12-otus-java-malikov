@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import ru.otus.database.core.sessionmanager.SessionManager;
 import ru.otus.database.core.sessionmanager.SessionManagerException;
 
