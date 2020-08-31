@@ -1,13 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <title>Пользователи</title>
-<!--    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
-<!--    <link href="/main.css" rel="stylesheet">-->
-<!--    <script src="/webjars/jquery/jquery.min.js"></script>-->
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-<!--    <script src="./app.js"></script>-->
 
     <script type="text/JavaScript">
         function getLoadUserList() {
@@ -16,25 +12,30 @@
                 console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/user/list', (usersList) => {
                     var userTable = document.getElementById("existingUsersTable");
-                    var userTableBody = document.createElement("tbody");
+                    userTable.querySelectorAll("tbody").forEach(function (e) {
+                        e.remove()
+                    })
 
-                    JSON.parse(usersList).fields.forEach(function(user){
-                    var row = document.createElement("tr");
-                    var idCell = document.createElement("td");
+                    var userTableBody = document.createElement("tbody");
+                    JSON.parse(usersList.body).forEach(function (user) {
+                        var row = document.createElement("tr");
+                        var idCell = document.createElement("td");
                         var nameCell = document.createElement("td");
                         var loginCell = document.createElement("td");
                         var passwordCell = document.createElement("td");
                         var roleCell = document.createElement("td");
                         var addressCell = document.createElement("td");
                         var phonesCell = document.createElement("td");
-                        idCell.innerHTML = user.body.id;
-                        nameCell.innerHTML = user.body.name;
-                        loginCell.innerHTML = user.body.login;
-                        passwordCell.innerHTML = user.body.password;
-                        roleCell.innerHTML = user.body.role;
-                        addressCell.innerHTML = user.body.address;
-                        phonesCell.innerHTML = user.body.phones;
-                    row.appendChild(idCell);
+                        idCell.innerHTML = user.id;
+                        nameCell.innerHTML = user.name;
+                        loginCell.innerHTML = user.login;
+                        passwordCell.innerHTML = user.password;
+                        roleCell.innerHTML = user.role;
+                        addressCell.innerHTML = user.address.street;
+                        phonesCell.innerHTML = user.phones.map(function (phoneNumber) {
+                            return phoneNumber.number;
+                        }).join();
+                        row.appendChild(idCell);
                         row.appendChild(nameCell);
                         row.appendChild(loginCell);
                         row.appendChild(passwordCell);
@@ -44,9 +45,27 @@
                         userTableBody.appendChild(row);
                     });
 
-                    userTable.appendChild(tblBody);
+                    userTable.appendChild(userTableBody);
                 });
             });
+            waitForSocketConnection(stompClient, requestUserList);
+        }
+    </script>
+    <script>
+        function waitForSocketConnection(stompClient, callback) {
+            setTimeout(
+                function () {
+                    if (stompClient.connected === true) {
+                        console.log("Connection is made")
+                        if (callback != null) {
+                            callback();
+                        }
+                    } else {
+                        console.log("wait for connection...")
+                        waitForSocketConnection(stompClient, callback);
+                    }
+
+                }, 1000); // wait 1 second for the connection...
         }
     </script>
 
@@ -69,15 +88,16 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(user),
-            });
-                // .then(response => response.json())
-                // .then(user => userDataContainer.innerHTML = 'Created user: ' + JSON.stringify(user));
+            })
+                .then(response => response.text())
+                .then(responseMessage => userDataContainer.innerHTML = responseMessage);
         }
 
 
     </script>
     <script>
         function requestUserList() {
+            console.log("Going to request users");
 
             fetch('api/users', {
                 credentials: 'include',
@@ -90,7 +110,7 @@
     </script>
 </head>
 
-<body onload="getLoadUserList();requestUserList();">
+<body onload="getLoadUserList();">
 <h4>Создать пользователя</h4>
 <input type="text" id="userNameTextBox" value="Иван" placeholder="Введите имя пользователя" size="25">
 <input type="text" id="userLoginTextBox" value="Король" placeholder="Введите логин пользователя" size="30">
@@ -109,42 +129,20 @@
 <h4>Существующие пользователи</h4>
 <button onClick="requestUserList()">Загрузить список пользователей</button>
 <table id="existingUsersTable">
-        <thead>
-        <tr>
-            <td style="width: 50px">Id</td>
-            <td style="width: 150px">Имя</td>
-            <td style="width: 150px">Логин</td>
-            <td style="width: 100px">Пароль</td>
-            <td style="width: 150px">Роль</td>
-            <td style="width: 350px">Адрес</td>
-            <td style="width: 450px">Телефоны</td>
-        </tr>
-        </thead>
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 150px">Логин</td>
+        <td style="width: 100px">Пароль</td>
+        <td style="width: 150px">Роль</td>
+        <td style="width: 350px">Адрес</td>
+        <td style="width: 450px">Телефоны</td>
+    </tr>
+    </thead>
+    <tbody id="existingUsersTableBody">
+    </tbody>
 </table>
-<!--<table class="users">-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <td style="width: 50px">Id</td>-->
-<!--        <td style="width: 150px">Имя</td>-->
-<!--        <td style="width: 150px">Логин</td>-->
-<!--        <td style="width: 100px">Пароль</td>-->
-<!--        <td style="width: 150px">Роль</td>-->
-<!--        <td style="width: 350px">Адрес</td>-->
-<!--        <td style="width: 450px">Телефоны</td>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr th:each="user : ${users}">-->
-<!--        <td th:text="${user.id}"></td>-->
-<!--        <td th:text="${user.name}"></td>-->
-<!--        <td th:text="${user.login}"></td>-->
-<!--        <td th:text="${user.password}"></td>-->
-<!--        <td th:text="${user.role}"></td>-->
-<!--        <td th:text="${user.address}"></td>-->
-<!--        <td th:text="${user.phones}"></td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
 </body>
 
 </html>

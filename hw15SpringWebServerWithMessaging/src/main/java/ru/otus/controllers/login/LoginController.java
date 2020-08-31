@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.app.common.Waiter;
-import ru.otus.authentication.UserAuthService;
 import ru.otus.authentication.model.AuthUserData;
 import ru.otus.controllers.login.handlers.AuthenticateUserByLoginResponseHandler;
 import ru.otus.messagesystem.client.MsClient;
@@ -32,13 +31,11 @@ public class LoginController {
     private static final String LOGIN_PAGE_TEMPLATE = "login.html";
     private static final int USER_AUTHENTICATION_TIMEOUT_IN_SECONDS = 10;
 
-    private final UserAuthService userAuthService;
     private final MsClient messageClient;
     @Getter
     private final Map<UUID, Boolean> authenticationResponsesMap = new ConcurrentHashMap<>();
 
-    public LoginController(UserAuthService userAuthService, MessageSystem messageSystem) {
-        this.userAuthService = userAuthService;
+    public LoginController(MessageSystem messageSystem) {
         messageClient = new MsClientImpl(ClientNameDictionary.LOGIN_CONTROLLER_CLIENT_NAME.getName(), messageSystem);
         messageClient.addHandler(MessageType.AUTHENTICATE_USER, new AuthenticateUserByLoginResponseHandler(this));
         messageSystem.addClient(messageClient);
