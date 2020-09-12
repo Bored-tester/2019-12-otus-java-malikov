@@ -6,6 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class AppComponentItem {
-    private final String name;
     private final Object itemValue;
 }

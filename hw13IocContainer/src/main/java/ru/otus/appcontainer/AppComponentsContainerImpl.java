@@ -15,6 +15,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     //    a map of initialized app components with their names mapped by the class of the interface they implement
     private final Map<Class<?>, AppComponentItem> appComponentItemsMapByClass = new HashMap<>();
+    private final Map<String, AppComponentItem> appComponentItemsMapByName = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
         processConfig(initialConfigClass);
@@ -37,16 +38,12 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private Map<Integer, List<Method>> prepareInitializationMap(List<Method> appComponentInitializers) {
         final Map<Integer, List<Method>> appComponentInitializationMap = new HashMap<>();
-        appComponentInitializers.forEach(appComponentInitializer -> {
+        for (Method appComponentInitializer : appComponentInitializers) {
             int priority = appComponentInitializer.getAnnotation(AppComponent.class).order();
-            if (appComponentInitializationMap.containsKey(priority))
-                appComponentInitializationMap.get(priority).add(appComponentInitializer);
-            else {
-                List<Method> initQue = new ArrayList<>();
-                initQue.add(appComponentInitializer);
-                appComponentInitializationMap.put(priority, initQue);
-            }
-        });
+            appComponentInitializationMap.putIfAbsent(priority, new ArrayList<>());
+            List<Method> initQue = appComponentInitializationMap.get(priority);
+            initQue.add(appComponentInitializer);
+        }
         return appComponentInitializationMap;
     }
 
@@ -59,8 +56,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             throw new IllegalArgumentException(String.format("Failed to initialize class %s. It should have default public constructor without arguments", appConfigClass));
         }
 
-        sortedPriorities.forEach(priority -> {
-            appComponentInitializationMap.get(priority).forEach(appComponentInitializer -> {
+        for (Integer priority : sortedPriorities) {
+            for (Method appComponentInitializer: appComponentInitializationMap.get(priority)) {
                 try {
                     Class<?> appComponentClass = appComponentInitializer.getReturnType();
                     if (appComponentItemsMapByClass.containsKey(appComponentClass))
@@ -68,15 +65,15 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                                 "Duplicate component class %s.", appComponentInitializer.getName(), appComponentClass));
 
                     AppComponentItem appComponent = new AppComponentItem(
-                            appComponentInitializer.getAnnotation(AppComponent.class).name(),
                             appComponentInitializer.invoke(appConfig, getArguments(appComponentInitializer)));
                     appComponentItemsMapByClass.put(appComponentInitializer.getReturnType(), appComponent);
+                    appComponentItemsMapByName.put(appComponentInitializer.getAnnotation(AppComponent.class).name(), appComponent);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new IllegalArgumentException(String.format("Failed to initialize app component in method %s. " +
                             "It should be public and working.", appComponentInitializer.getName()));
                 }
-            });
-        });
+            }
+        }
     }
 
     private Object[] getArguments(Method appComponentInitializer) {
@@ -104,10 +101,6 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @Override
     public <C> C getAppComponent(String componentName) {
-        return appComponentItemsMapByClass.values().stream()
-                .filter(appComponent -> appComponent.getName().equals(componentName))
-                .map(appComponent -> (C) appComponent.getItemValue())
-                .findFirst()
-                .orElse(null);
+        return (C) appComponentItemsMapByName.get(componentName).getItemValue();
     }
 }
