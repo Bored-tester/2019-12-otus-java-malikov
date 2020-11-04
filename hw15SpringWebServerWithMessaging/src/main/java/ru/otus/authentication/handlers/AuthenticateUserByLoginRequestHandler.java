@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.otus.app.common.Serializers;
 import ru.otus.app.common.Waiter;
 import ru.otus.authentication.UserAuthService;
-import ru.otus.authentication.model.AuthUserData;
+import ru.otus.controllers.login.model.AuthUserData;
 import ru.otus.database.core.enums.UserRole;
 import ru.otus.database.core.model.User;
 import ru.otus.messagesystem.client.MsClient;

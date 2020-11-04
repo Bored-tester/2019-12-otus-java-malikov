@@ -31,6 +31,10 @@
         <module>hw13IocContainer</module>
         <module>hw14JMM</module>
         <module>hw15SpringWebServerWithMessaging</module>
+        <module>hw16MessageServer</module>
+        <!--        <module>hw16MessageServer/message-server</module>-->
+<!--        <module>hw16MessageServer/admin-ui</module>-->
+<!--        <module>hw16MessageServer/admin-backend</module>-->
     </modules>
 
     <properties>

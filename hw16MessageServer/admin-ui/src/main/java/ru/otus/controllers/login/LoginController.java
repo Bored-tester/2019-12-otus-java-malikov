@@ -5,20 +5,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
-import ru.otus.app.common.Waiter;
+import ru.otus.common.Waiter;
+import ru.otus.common.enums.UserRole;
+import ru.otus.common.model.User;
+import ru.otus.controllers.login.handlers.GetUserByLoginResponseHandler;
 import ru.otus.controllers.login.model.AuthUserData;
-import ru.otus.controllers.login.handlers.AuthenticateUserByLoginResponseHandler;
 import ru.otus.messagesystem.client.MsClient;
-import ru.otus.messagesystem.client.MsClientImpl;
 import ru.otus.messagesystem.client.enums.ClientNameDictionary;
-import ru.otus.messagesystem.message.Message;
 import ru.otus.messagesystem.message.enums.MessageType;
-import ru.otus.messagesystem.service.MessageSystem;
+import ru.otus.messagesystem.message.model.Message;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,18 +28,18 @@ public class LoginController {
 
     private static final String PARAM_LOGIN = "login";
     private static final String PARAM_PASSWORD = "password";
-    private static final int MAX_INACTIVE_INTERVAL = 60;
+    private static final int MAX_INACTIVE_INTERVAL = 300;
     private static final String LOGIN_PAGE_TEMPLATE = "login.html";
     private static final int USER_AUTHENTICATION_TIMEOUT_IN_SECONDS = 10;
 
     private final MsClient messageClient;
     @Getter
-    private final Map<UUID, Boolean> authenticationResponsesMap = new ConcurrentHashMap<>();
+    private final Map<UUID, User> userResponsesMap = new ConcurrentHashMap<>();
+    ;
 
-    public LoginController(MessageSystem messageSystem) {
-        messageClient = new MsClientImpl(ClientNameDictionary.LOGIN_CONTROLLER_CLIENT_NAME.getName(), messageSystem);
-        messageClient.addHandler(MessageType.AUTHENTICATE_USER, new AuthenticateUserByLoginResponseHandler(this));
-        messageSystem.addClient(messageClient);
+    public LoginController(MsClient messageClient) {
+        messageClient.addHandler(MessageType.GET_USER_DATA_BY_LOGIN, new GetUserByLoginResponseHandler(userResponsesMap));
+        this.messageClient = messageClient;
     }
 
     @GetMapping("/login")
@@ -49,12 +50,16 @@ public class LoginController {
     @PostMapping("/login")
     protected RedirectView doPost(HttpServletRequest request, HttpServletResponse response) {
         AuthUserData authUserData = new AuthUserData(request.getParameter(PARAM_LOGIN), request.getParameter(PARAM_PASSWORD));
-        Message userAuthenticationMessage = messageClient.produceMessage(ClientNameDictionary.USER_AUTH_CLIENT_NAME.getName(), authUserData, MessageType.AUTHENTICATE_USER);
-        messageClient.sendMessage(userAuthenticationMessage);
 
-        Boolean authSuccessful = Waiter.waitForMessagePayloadInMap(userAuthenticationMessage.getId(), authenticationResponsesMap, USER_AUTHENTICATION_TIMEOUT_IN_SECONDS).orElse(false);
+        Message getUserByLoginMessage = messageClient.produceMessage(ClientNameDictionary.BACKEND_SERVICE_CLIENT_NAME.getName(), authUserData.getLogin(), MessageType.GET_USER_DATA_BY_LOGIN);
+        messageClient.sendMessage(getUserByLoginMessage);
 
-        if (authSuccessful) {
+        Optional<User> user = Waiter.waitForMessagePayloadInMap(getUserByLoginMessage.getId(), userResponsesMap, USER_AUTHENTICATION_TIMEOUT_IN_SECONDS);
+        Boolean isAuthenticated = user
+                .map(loggingInUser -> (loggingInUser.getPassword().equals(authUserData.getPassword())) && (loggingInUser.getRole().equals(UserRole.ADMIN)))
+                .orElse(false);
+
+        if (isAuthenticated) {
             HttpSession session = request.getSession();
             session.setMaxInactiveInterval(MAX_INACTIVE_INTERVAL);
             return new RedirectView("/users", true);

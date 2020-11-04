@@ -1,4 +1,4 @@
-package ru.otus.authentication.model;
+package ru.otus.controllers.login.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
